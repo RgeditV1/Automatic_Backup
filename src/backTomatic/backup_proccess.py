@@ -6,7 +6,7 @@ from compresion import comprimir_archivo
 
 TIMEOUT_CONECTION = 5
 
-dir = Path.home().joinpath("Documents","REMOTO").resolve()
+dir = Path.home().joinpath("Documents").resolve()
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 save_zip = Path.home().joinpath("Documents","Backups", f"backup_{timestamp}.zip").resolve()
 

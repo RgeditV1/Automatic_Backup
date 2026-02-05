@@ -3,7 +3,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-
+#**********************AREA DE BARRA DE CARGA**********************#
 def barra_de_carga(archivos: list, carpeta_origen: Path, archivo_destino: Path, 
                    nivel_compresion: int):
     """
@@ -70,6 +70,7 @@ def barra_de_carga(archivos: list, carpeta_origen: Path, archivo_destino: Path,
         print(f"\nError: {e}")
         return False
 
+#**********************AREA DE COMPRESION**********************#
 
 def comprimir_archivo(carpeta_origen: Path, carpeta_destino: Path, 
                       nivel_compresion: int = 1):
@@ -83,6 +84,13 @@ def comprimir_archivo(carpeta_origen: Path, carpeta_destino: Path,
     # Recolectar TODOS los archivos
     archivos = [a for a in carpeta_origen.rglob('*') if a.is_file()]
     
+    #aqui eliminaremos algunos archivos que no queremos comprimir
+    for i, a in enumerate(archivos):
+        if a.suffix in ['.tmp', '.log','.iso']:  # Ejemplo: excluir archivos temporales y logs
+            print(f"Excluyendo archivo: {a}")
+            archivos.pop(i)
+
+            
     if not archivos:
         print("La carpeta está vacía")
         return False
