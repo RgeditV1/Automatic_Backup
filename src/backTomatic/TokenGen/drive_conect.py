@@ -1,6 +1,8 @@
 from pathlib import Path
 from sys import exit
 import socket
+from msvcrt import getch
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -37,7 +39,8 @@ def conectar_drive():
         print("\n Luego ejecute el programa de nuevo.")
         print("\n Consulte con el desarrollador para obtener ayuda.")
         
-        exit(1)
+        print("Pulsa cualquier tecla para cerrar...")
+        getch()
 
     creds = None
 
