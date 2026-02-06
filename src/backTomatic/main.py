@@ -17,11 +17,11 @@ INFO = {
 # siempre que se mantenga la atribución al autor original.
 # ------------------------------------------------------------
 import platform
-from time import sleep, time
+from time import sleep
 from os import system
 
 from tqdm import tqdm
-import tools.backup_proccess as backup_proccess
+from tools import backup_proccess
 
 if platform.system() == "Windows":
     def main():
@@ -31,7 +31,7 @@ if platform.system() == "Windows":
         sleep(5)
         system("cls")
         
-        print("Iniciando proceso de backup automático...\n")
+        print("\nIniciando proceso de backup automático...\n")
         
         spinner = ["|", "/", "-", "\\"]
         for _ in tqdm(range(50), bar_format="{bar} {postfix}"):
