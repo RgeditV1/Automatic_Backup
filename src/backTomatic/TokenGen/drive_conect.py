@@ -1,5 +1,4 @@
 from pathlib import Path
-from sys import exit
 import socket
 from msvcrt import getch
 

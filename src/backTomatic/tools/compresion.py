@@ -1,7 +1,28 @@
 import zipfile
 from pathlib import Path
+from datetime import datetime
+import hashlib
 
 from tqdm import tqdm
+
+EXCLUIR_NOMBRES = {
+    "credentials.json",
+    "token.json",
+    "carpetaID.json",
+}
+
+EXCLUIR_SUFFIX = {
+    ".tmp",
+    ".log",
+    ".iso",
+    ".lnk",
+}
+
+EXCLUIR_RUTAS = set(
+    #e.g Path("C:/Users/tu_usuario/AppData"),
+)
+
+LOG_EXCLUSIONES = Path.cwd() / "exclusiones.log"
 
 #**********************AREA DE BARRA DE CARGA**********************#
 def barra_de_carga(archivos: list, carpeta_origen: Path, archivo_destino: Path, 
@@ -69,34 +90,109 @@ def barra_de_carga(archivos: list, carpeta_origen: Path, archivo_destino: Path,
     except Exception as e:
         print(f"\nError: {e}")
         return False
+    
+#**********************AREA DE VALIDACION DE ARCHIVOS**********************#
+def archivo_valido(p: Path, vistos: set, excluidos: list) -> bool:
+    motivo = None
+
+    # Excluir por ruta
+    for ruta in EXCLUIR_RUTAS:
+        try:
+            if p.resolve().is_relative_to(ruta):
+                motivo = "ruta bloqueada"
+                break
+        except AttributeError:
+            # Compatibilidad Python < 3.9
+            if str(p.resolve()).startswith(str(ruta)):
+                motivo = "ruta bloqueada"
+                break
+
+    if not motivo and p.name in EXCLUIR_NOMBRES:
+        motivo = "nombre bloqueado"
+
+    elif not motivo and p.suffix.lower() in EXCLUIR_SUFFIX:
+        motivo = f"extension bloqueada ({p.suffix})"
+
+    elif not motivo:
+        try:
+            tamaño = p.stat().st_size
+        except Exception:
+            motivo = "no se pudo leer tamaño"
+        else:
+            if tamaño not in vistos:
+                vistos[tamaño] = set()
+
+            h = hash_archivo(p)
+
+            if h in vistos[tamaño]:
+                motivo = "archivo duplicado por contenido"
+            else:
+                vistos[tamaño].add(h)
+
+
+    if motivo:
+        excluidos.append((p, motivo))
+        return False
+
+    return True
+
+#**********************AREA DE VALIDACION POR HASH**********************#
+def hash_archivo(p: Path, chunk=1024 * 1024):
+    h = hashlib.sha256()
+
+    with open(p, "rb") as f:
+        for bloque in iter(lambda: f.read(chunk), b""):
+            h.update(bloque)
+
+    return h.hexdigest()
+
 
 #**********************AREA DE COMPRESION**********************#
 
 def comprimir_archivo(carpeta_origen: Path, carpeta_destino: Path, 
                       nivel_compresion: int = 1):
-    
+
     if not carpeta_origen.exists() or not carpeta_origen.is_dir():
         print(f"Error: {carpeta_origen} no es una carpeta válida")
         return False
-    
-    print(f"Comprimiendo: {carpeta_origen.name}")
-    
-    # Recolectar TODOS los archivos
-    archivos = [a for a in carpeta_origen.rglob('*') if a.is_file()]
-    
-    #aqui eliminaremos algunos archivos que no queremos comprimir
-    for i, a in enumerate(archivos):
-        if a.suffix in ['.tmp', '.log','.iso']:  # Ejemplo: excluir archivos temporales y logs
-            print(f"Excluyendo archivo: {a}")
-            archivos.pop(i)
 
-            
+    print(f"Comprimiendo: {carpeta_origen.name}")
+
+    vistos = {}
+    excluidos = []
+
+    # Recolectar todos los archivos
+    archivos = [a for a in carpeta_origen.rglob('*') if a.is_file()]
+
     if not archivos:
         print("La carpeta está vacía")
         return False
-    
-    total_archivos = len(archivos)
-    print(f"Total de archivos: {total_archivos}\n")
-    
-    # Conectar con la función de barra de carga
-    return barra_de_carga(archivos, carpeta_origen, carpeta_destino, nivel_compresion)
+
+    # Filtrar archivos
+    archivos_filtrados = [
+        a for a in archivos if archivo_valido(a, vistos, excluidos)
+    ]
+
+    # Generar log DESPUÉS del filtrado
+    if excluidos:
+        with open(LOG_EXCLUSIONES, "w", encoding="utf-8") as f:
+            f.write(f"Exclusiones - {datetime.now()}\n\n")
+
+            for p, motivo in excluidos:
+                f.write(f"{p} -> {motivo}\n")
+
+        print(f"\nSe excluyeron {len(excluidos)} archivos.")
+        print(f"Log generado en: {LOG_EXCLUSIONES.resolve()}")
+
+    else:
+        print("\nNo hubo archivos excluidos.")
+
+    print(f"Total de archivos incluidos: {len(archivos_filtrados)}\n")
+
+    # Comprimir SOLO los filtrados
+    return barra_de_carga(
+        archivos_filtrados,
+        carpeta_origen,
+        carpeta_destino,
+        nivel_compresion
+    )

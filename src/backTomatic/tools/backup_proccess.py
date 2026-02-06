@@ -33,7 +33,7 @@ def procesar_backup():
     if not comprimir_archivo(DIR_ORIGEN, save_zip):
         print("Error: No se pudo crear el backup")
         return
-
+    
     print("\n" + "=" * 60)
     print("INICIANDO SUBIDA A GOOGLE DRIVE")
     print("=" * 60)
