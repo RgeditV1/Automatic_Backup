@@ -1,11 +1,9 @@
 from pathlib import Path
-import socket
 from datetime import datetime
 
 from .compresion import comprimir_archivo
 from .ggdriveAPI import subir_zip
 
-TIMEOUT_CONECTION = 5
 
 DOCS_DIR = Path.home() / "Documents"
 BACKUP_DIR = DOCS_DIR / "Backups"
@@ -13,17 +11,6 @@ CONFIG_DIR = BACKUP_DIR / "config"
 VERSIONES_DIR = BACKUP_DIR / "versiones"
 
 DIR_ORIGEN = DOCS_DIR
-
-
-def is_connected():
-    try:
-        socket.setdefaulttimeout(TIMEOUT_CONECTION)
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))
-        print("Conectado a internet")
-        return True
-    except socket.error:
-        print("Verifique su conexión a Internet")
-        return False
 
 
 def asegurar_directorios():
@@ -60,5 +47,4 @@ def procesar_backup():
 
 
 def start():
-    if is_connected():
-        procesar_backup()
+    procesar_backup()
