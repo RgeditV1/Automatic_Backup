@@ -36,10 +36,10 @@ def conectar_drive():
         print("\nERROR: No se encontró credentials.json")
         print("Debe colocar su archivo credentials.json en:")
         print(CONFIG_DIR)
-        print("\n Luego ejecute el programa de nuevo.")
-        print("\n Consulte con el desarrollador para obtener ayuda.")
+        print("\n Si ya tiene el archivo, asegúrese de que se llame exactamente 'credentials.json'y esté en la ubicación correcta.")
+        print("\n Consulte con el desarrollador para obtener ayuda.\n")
         
-        print("Pulsa cualquier tecla para cerrar...")
+        print("intentar de nuevo...")
         getch()
 
     creds = None

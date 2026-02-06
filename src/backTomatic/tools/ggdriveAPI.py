@@ -29,7 +29,23 @@ def obtener_carpeta_backups(service):
     if CARPETA_ID_FILE.exists():
         try:
             with open(CARPETA_ID_FILE, "r", encoding="utf-8") as f:
-                return json.load(f).get("carpeta_id")
+                carpeta_id = json.load(f).get("carpeta_id")
+            
+            if carpeta_id:
+                # Validar contra Drive
+                try:
+                    service.files().get(
+                        fileId=carpeta_id,
+                        fields="id"
+                    ).execute()
+
+                    # Si llega aquí, la carpeta existe
+                    return carpeta_id
+
+                except Exception:
+                    # ID inválido (carpeta borrada en Drive)
+                    print("Carpeta guardada ya no existe en Drive, recreando...")
+                    CARPETA_ID_FILE.unlink(missing_ok=True)
         except:
             pass
 
