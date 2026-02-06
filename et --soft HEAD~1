@@ -1,0 +1,35 @@
+[33mcommit c48dbc3ca2601c0305a28dceffa42da6e0466d3b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: Rgedit <angelmiguelparedes@gmail.com>
+Date:   Fri Feb 6 03:05:41 2026 -0400
+
+    #update alpha-1.0.1
+    -se agrego un generador de tokens
+    -se refactorizo el codigo para mejor estructuracion
+    -nueva funcion, busca y crea la carpeta backups en drive y devuelve el id en un archivo.json
+    -ahora los datos son almacenados en .json
+
+[33mcommit d9ad0c36a607425d7956fdf9f87cb8e8b7d15f40[m[33m ([m[1;33mtag: [m[1;33mBackTomatic-Alpha-1.0[m[33m)[m
+Author: Rgedit <angelmiguelparedes@gmail.com>
+Date:   Thu Feb 5 18:25:14 2026 -0400
+
+    Programa funcional, comprime los archivos y ya puede subir archivos a Drive
+    
+    ****Necesitas tu token y credentials.json
+
+[33mcommit a45b719450dd52b4d7ab8cacfe2e2c1b2054f193[m
+Author: Rgedit <angelmiguelparedes@gmail.com>
+Date:   Thu Feb 5 13:55:53 2026 -0400
+
+    filtro agregado, puedes excluir archivos mendiante sufijos, ojo solo desde el codigo
+
+[33mcommit b8ef5cd0be8d5b1459032f86399ba42eca059134[m
+Author: Rgedit <angelmiguelparedes@gmail.com>
+Date:   Wed Feb 4 18:51:36 2026 -0400
+
+    Configuraciones iniciales, El programa ya puede comprimir los archivos, pero solo de ciertas carpetas que talvez en un futuro modifique para que admita multiples carpetas para hacer backups
+
+[33mcommit 40bf4cb6f8738125d3ef7120dbd780078c12db85[m
+Author: Rgedit <63971812+RgeditV1@users.noreply.github.com>
+Date:   Wed Feb 4 15:47:01 2026 -0400
+
+    Initial commit

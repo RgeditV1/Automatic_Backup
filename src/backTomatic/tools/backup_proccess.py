@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+from time import sleep
 
 from .compresion import comprimir_archivo
 from .ggdriveAPI import subir_zip
@@ -41,8 +42,9 @@ def procesar_backup():
 
     if resultado:
         print("Backup completado exitosamente")
+        sleep(10)
     else:
-        print("\nAdvertencia: No se pudo subir a Google Drive")
+        print("\nError: No se pudo subir a Google Drive")
         print(f"El backup está guardado localmente en: {save_zip}")
 
 

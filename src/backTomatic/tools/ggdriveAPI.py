@@ -9,7 +9,7 @@ from googleapiclient.http import MediaFileUpload
 
 from tqdm import tqdm
 
-from TokenGen import drive_conect, TOKEN
+import TokenGen.drive_conect as drive_conect
 
 SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 
